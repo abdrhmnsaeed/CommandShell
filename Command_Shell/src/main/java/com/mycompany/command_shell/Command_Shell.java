@@ -16,39 +16,45 @@ import java.util.*;
 public class Command_Shell {
     
     public static void main(String[] args) {
-        Scanner userInput= new Scanner(System.in);
-        String command = "";
-
-        var homeDir = System.getProperty("user.dir");
-        System.out.println(homeDir+"/$ "); 
-        command=userInput.nextLine();
-        System.err.println("\n");
-
-       
-        ProcessBuilder processBuilder = new ProcessBuilder().command("cmd", "/C", command);
-
-        try {
-            Process process = processBuilder.start();
-
-            //read the output
-            InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String output = null;
-            while ((output = bufferedReader.readLine()) != null) {
-                System.out.println(output);
-            }
-
-            //wait for the process to complete
-            process.waitFor();
-
-            //close the resources
-            bufferedReader.close();
-            process.destroy();
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-      
+        Command_Shell object = new Command_Shell();
+        object.waitMethod();
+        
     }
-}
+       private synchronized void waitMethod() {
+ 
+	while (true) { 
+            Scanner userInput= new Scanner(System.in);
+            String command = "";
+
+            var homeDir = System.getProperty("user.dir");
+            System.out.println(homeDir+"/$ "); 
+            command=userInput.nextLine();
+
+            System.err.println("\b");
+            ProcessBuilder processBuilder = new ProcessBuilder().command("cmd", "/C", command);
+
+            try {
+                Process process = processBuilder.start();
+
+                //read the output
+                InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String output = null;
+                while ((output = bufferedReader.readLine()) != null) {
+                    System.out.println(output);
+                }
+
+                //wait for the process to complete
+                process.waitFor();
+
+                //close the resources
+                bufferedReader.close();
+                process.destroy();
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+       }
+    }
 
